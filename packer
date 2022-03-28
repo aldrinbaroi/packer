@@ -26,6 +26,7 @@ packer_execute() {
 	esac
 	echo 
 	WORKSPACE_DIR=$(get_workspace_dir)
+	PACKER_IMAGE="aldrinebaroi/packer:$PACKER_IMAGE_TYPE"
 	[[ -f $WORKSPACE_DIR ]] && echo "Workspace directory doesn't exist. aborting..." && exit 1
 	docker run \
 		${INTERACTIVE} \
