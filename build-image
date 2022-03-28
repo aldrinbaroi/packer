@@ -21,14 +21,17 @@ build_image() {
 		light)
 			SOURCE_IMAGE="hashicorp/packer:$IMAGE_TYPE-$PACKER_LIGHT_UPSTREAM_VERSION"
 			TARGET_IMAGE="aldrinebaroi/packer:$IMAGE_TYPE-$PACKER_LIGHT_UPSTREAM_VERSION"
+			TARGET_IMAGE_LATEST="aldrinebaroi/packer:$IMAGE_TYPE"
 			;;
 		full)
 			SOURCE_IMAGE="hashicorp/packer:$IMAGE_TYPE-$PACKER_FULL_UPSTREAM_VERSION"
 			TARGET_IMAGE="aldrinebaroi/packer:$IMAGE_TYPE-$PACKER_FULL_UPSTREAM_VERSION"
+			TARGET_IMAGE_LATEST="aldrinebaroi/packer:$IMAGE_TYPE"
 			;;
 	esac
 	docker build \
 		-t $TARGET_IMAGE \
+		-t $TARGET_IMAGE_LATEST \
 		--build-arg SOURCE_IMAGE="$SOURCE_IMAGE" \
 		.
 	(( $? )) && echo "Failed to build image." && exit 1
