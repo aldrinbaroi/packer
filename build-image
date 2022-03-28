@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source packer-build.conf
+
 show_usage() {
 cat << EOF
 
@@ -15,12 +17,22 @@ EOF
 
 build_image() {
 	local IMAGE_TYPE=$1
+	case $IMAGE_TYPE in
+		light)
+			SOURCE_IMAGE="hashicorp/packer:$IMAGE_TYPE-$PACKER_LIGHT_UPSTREAM_VERSION"
+			TARGET_IMAGE="aldrinebaroi/packer:$IMAGE_TYPE-$PACKER_LIGHT_UPSTREAM_VERSION"
+			;;
+		full)
+			SOURCE_IMAGE="hashicorp/packer:$IMAGE_TYPE-$PACKER_FULL_UPSTREAM_VERSION"
+			TARGET_IMAGE="aldrinebaroi/packer:$IMAGE_TYPE-$PACKER_FULL_UPSTREAM_VERSION"
+			;;
+	esac
 	docker build \
-		-t aldrin/packer:$IMAGE_TYPE \
-		--build-arg SOURCE_IMAGE="hashicorp/packer:$IMAGE_TYPE" \
+		-t $TARGET_IMAGE \
+		--build-arg SOURCE_IMAGE="$SOURCE_IMAGE" \
 		.
-	(( $? )) && echo "Failed to build image" && exit 1
-	echo "Successfully build aldrin/packer:$IMAGE_TYPE image"
+	(( $? )) && echo "Failed to build image." && exit 1
+	echo "Successfully build $TARGET_IMAGE image."
 }
 
 IMAGE_TYPE=${1// /}
