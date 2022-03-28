@@ -1,0 +1,107 @@
+#!/bin/bash
+
+source packer.conf
+
+MAP_DOCKER_SOCK_VOLUME="-v /var/run/docker.sock:/var/run/docker.sock"
+[[ ! ${USE_DOCKER^^} == "Y" ]] && MAP_DOCKER_SOCK_VOLUME=""
+
+get_workspace_dir() {
+	[[ -z ${WORKSPACE_DIR// /} ]] && WORKSPACE_DIR=$(pwd)/workspace
+	[[ $WORKSPACE_DIR =~ ^\/ ]] && echo $WORKSPACE_DIR || echo $(pwd)/$WORKSPACE_DIR
+}
+
+get_docker_sock() {
+	[[ ${USE_DOCKER^^} == "Y" ]] 
+MAP_DOCKER_SOCK_VOLUME="-v /var/run/docker.sock:/var/run/docker.sock"
+}
+
+packer_execute() {
+	echo ""
+	local CMD=$1
+	local INTERACTIVE=""
+	case $CMD in
+		console)
+			INTERACTIVE="-it"
+			;;
+	esac
+	echo 
+	WORKSPACE_DIR=$(get_workspace_dir)
+	[[ -f $WORKSPACE_DIR ]] && echo "Workspace directory doesn't exist. aborting..." && exit 1
+	docker run \
+		${INTERACTIVE} \
+		--rm \
+		-v $WORKSPACE_DIR:/workspace \
+		${MAP_DOCKER_SOCK_VOLUME} \
+		-w /workspace \
+		-e PACKER_PLUGIN_PATH=/workspace/.packer.d/plugins \
+		$PACKER_IMAGE $@
+	echo "" 
+}
+
+version() {
+	packer_execute --version
+}
+
+init() { 
+	DIR=${1:-.}
+	packer_execute init "${DIR}"
+}
+
+build() { 
+	DIR=${1:-.}
+	packer_execute build "${DIR}"
+}
+
+console() {
+	packer_execute console "$@"
+}
+
+help() {
+	cat <<-HELPTEXT
+
+	Usage: packer [--version] [--help] <command> [<args>]
+
+	Available commands are:
+
+	build           build image(s) from template
+	console         creates a console for testing variable interpolation
+	fix             fixes templates from old versions of packer
+	fmt             Rewrites HCL2 config files to canonical format
+	hcl2_upgrade    transform a JSON template into an HCL2 configuration
+	init            Install missing plugins or upgrade plugins
+	inspect         see components of a template
+	validate        check that a template is valid
+	version         Prints the Packer version
+
+	HELPTEXT
+}
+
+CMD=$1
+shift 1
+ARGS="$@"
+
+case $CMD in
+	--version)
+		version
+		;;
+	--help)
+		help
+		;;
+	init)
+		init $ARGS
+		;;
+	build)
+		build $ARGS
+		;;
+	console)
+		console $ARGS
+		;;
+	*)
+		get_workspace_dir
+		[[ -z ${CMD// /} ]] && help && exit 0
+		echo "Invalid request: [$CMD]"
+		exit 1
+		;;
+esac
+
+#::END::

@@ -1,0 +1,42 @@
+#!/bin/bash
+
+show_usage() {
+cat << EOF
+
+usage: build-image [IMAGE TYPE]
+
+  IMAGE_TYPE
+      light - build packer light image with docker cli
+              Default build is light when build type not specified
+      full  - build package full image with docker cli 
+
+EOF
+}
+
+build_image() {
+	local IMAGE_TYPE=$1
+	docker build \
+		-t aldrin/packer:$IMAGE_TYPE \
+		--build-arg SOURCE_IMAGE="hashicorp/packer:$IMAGE_TYPE" \
+		.
+	(( $? )) && echo "Failed to build image" && exit 1
+	echo "Successfully build aldrin/packer:$IMAGE_TYPE image"
+}
+
+IMAGE_TYPE=${1// /}
+IMAGE_TYPE=${IMAGE_TYPE,,}
+[[ -z ${IMAGE_TYPE} ]] && IMAGE_TYPE="light"
+
+case $IMAGE_TYPE in 
+	light|full)
+		build_image $IMAGE_TYPE
+		;;
+	help)
+		show_usage
+		;;
+	*)
+		echo "Invalid build type [$IMAGE_TYPE]"
+		;;
+esac 
+
+#::END::
