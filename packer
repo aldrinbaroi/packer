@@ -40,44 +40,6 @@ packer_execute() {
 	echo "" 
 }
 
-build() { 
-	DIR=${1:-.}
-	packer_execute build "${DIR}"
-}
-
-console() {
-	packer_execute console "$@"
-}
-
-fix() {
-	packer_execute fix "$@"
-}
-
-fmt() {
-	packer_execute fmt "$@"
-}
-
-hcl2_upgrade() {
-	packer_execute hcl2_upgrade "$@"
-}
-
-init() { 
-	DIR=${1}
-	packer_execute init "${DIR}"
-}
-
-inspect() {
-	packer_execute inspect "$@"
-}
-
-validate() {
-	packer_execute validate "$@"
-}
-
-version() {
-	packer_execute --version
-}
-
 help() {
 	cat <<-HELPTEXT
 
