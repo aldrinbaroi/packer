@@ -1,18 +1,10 @@
 #!/bin/bash
 
-source packer.conf
-
-MAP_DOCKER_SOCK_VOLUME="-v /var/run/docker.sock:/var/run/docker.sock"
-[[ ! ${USE_DOCKER^^} == "Y" ]] && MAP_DOCKER_SOCK_VOLUME=""
+source packer.conf 
 
 get_workspace_dir() {
 	[[ -z ${WORKSPACE_DIR// /} ]] && WORKSPACE_DIR=$(pwd)/workspace
 	[[ $WORKSPACE_DIR =~ ^\/ ]] && echo $WORKSPACE_DIR || echo $(pwd)/$WORKSPACE_DIR
-}
-
-get_docker_sock() {
-	[[ ${USE_DOCKER^^} == "Y" ]] 
-MAP_DOCKER_SOCK_VOLUME="-v /var/run/docker.sock:/var/run/docker.sock"
 }
 
 packer_execute() {
@@ -26,6 +18,8 @@ packer_execute() {
 	esac
 	echo 
 	WORKSPACE_DIR=$(get_workspace_dir)
+	MAP_DOCKER_SOCK_VOLUME="-v /var/run/docker.sock:/var/run/docker.sock"
+	[[ ! ${USE_DOCKER^^} == "Y" ]] && MAP_DOCKER_SOCK_VOLUME=""
 	[[ -z ${PACKER_IMAGE_TYPE// /} ]] && PACKER_IMAGE_TYPE="light"
 	[[ -z ${PACKER_IMAGE// /} ]] && PACKER_IMAGE="aldrinebaroi/packer:$PACKER_IMAGE_TYPE"
 	[[ -f $WORKSPACE_DIR ]] && echo "Workspace directory doesn't exist. aborting..." && exit 1
