@@ -3,6 +3,8 @@ Packer images built from ***hashicorp/packer*** light & full images to add **doc
 
 The bash utility script ***packer*** provides the same command line interface when using the images. The ***packer*** bash script can also be used ***hashicorp/packer*** images too.
 
+Docker Hub: https://hub.docker.com/r/aldrinebaroi/packer
+
 ### How to use the imge:
 
 **Step #1**
