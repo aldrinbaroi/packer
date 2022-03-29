@@ -26,7 +26,8 @@ packer_execute() {
 	esac
 	echo 
 	WORKSPACE_DIR=$(get_workspace_dir)
-	PACKER_IMAGE="aldrinebaroi/packer:$PACKER_IMAGE_TYPE"
+	[[ -z ${PACKER_IMAGE_TYPE// /} ]] && PACKER_IMAGE_TYPE="light"
+	[[ -z ${PACKER_IMAGE// /} ]] && PACKER_IMAGE="aldrinebaroi/packer:$PACKER_IMAGE_TYPE"
 	[[ -f $WORKSPACE_DIR ]] && echo "Workspace directory doesn't exist. aborting..." && exit 1
 	docker run \
 		${INTERACTIVE} \
@@ -39,15 +40,6 @@ packer_execute() {
 	echo "" 
 }
 
-version() {
-	packer_execute --version
-}
-
-init() { 
-	DIR=${1:-.}
-	packer_execute init "${DIR}"
-}
-
 build() { 
 	DIR=${1:-.}
 	packer_execute build "${DIR}"
@@ -55,6 +47,35 @@ build() {
 
 console() {
 	packer_execute console "$@"
+}
+
+fix() {
+	packer_execute fix "$@"
+}
+
+fmt() {
+	packer_execute fmt "$@"
+}
+
+hcl2_upgrade() {
+	packer_execute hcl2_upgrade "$@"
+}
+
+init() { 
+	DIR=${1}
+	packer_execute init "${DIR}"
+}
+
+inspect() {
+	packer_execute inspect "$@"
+}
+
+validate() {
+	packer_execute validate "$@"
+}
+
+version() {
+	packer_execute --version
 }
 
 help() {
@@ -82,23 +103,20 @@ shift 1
 ARGS="$@"
 
 case $CMD in
-	--version)
-		version
-		;;
-	--help)
-		help
-		;;
-	init)
-		init $ARGS
-		;;
-	build)
-		build $ARGS
-		;;
-	console)
-		console $ARGS
+	--version)	;& 
+	--help)		;&
+	build)		;&
+	console)	;&
+	fix)		;&
+	fmt)		;&
+	hcl2_upgrade)	;&
+	init)		;&
+	inspect)	;&
+	validate)	;&
+	version)
+		packer_execute $CMD $ARGS
 		;;
 	*)
-		get_workspace_dir
 		[[ -z ${CMD// /} ]] && help && exit 0
 		echo "Invalid request: [$CMD]"
 		exit 1
