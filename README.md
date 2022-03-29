@@ -1,7 +1,9 @@
 # packer
 Packer images built from ***hashicorp/packer*** light & full images to add **docker-cli** to build images with Docker.
 
-The bash utility script ***packer*** provides the same command line interface when using the images. The ***packer*** bash script can also be used ***hashicorp/packer*** images too.
+The bash utility script ***packer*** provides the same command line interface when using the images. The ***packer*** bash script can also be used with  ***hashicorp/packer*** images too.
+
+Docker Hub: https://hub.docker.com/r/aldrinebaroi/packer
 
 ### How to use the imge:
 
@@ -17,10 +19,12 @@ Set ***USE_DOCKER=Y*** to build docker images
 
 Set ***PACKER_IMAGE*** to one of the following:
 
- 1. aldrin/packer:light
- 2. aldrin/packer:full
+ 1. aldrinebaroi/packer:light
+ 2. aldrinebaroi/packer:full
  3. hashicorp/packer:light
  4. hashicorp/packer:full
+
+ If not set, ***PACKER_IMAGE*** defaults to ***aldrinebaroi/packer:light***
 
 (Optional) Set ***WORKSPACE_DIR*** to specify the workspace directory on the "host" system.  If not specified then it ***defaults*** to ***$(pwd)/workspace***
 
