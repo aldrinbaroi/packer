@@ -19,10 +19,12 @@ Set ***USE_DOCKER=Y*** to build docker images
 
 Set ***PACKER_IMAGE*** to one of the following:
 
- 1. aldrin/packer:light
- 2. aldrin/packer:full
+ 1. aldrinebaroi/packer:light
+ 2. aldrinebaroi/packer:full
  3. hashicorp/packer:light
  4. hashicorp/packer:full
+
+ If not set, ***PACKER_IMAGE*** defaults to ***aldrinebaroi/packer:light***
 
 (Optional) Set ***WORKSPACE_DIR*** to specify the workspace directory on the "host" system.  If not specified then it ***defaults*** to ***$(pwd)/workspace***
 
