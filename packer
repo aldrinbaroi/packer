@@ -16,7 +16,7 @@ packer_execute() {
 			INTERACTIVE="-it"
 			;;
 	esac
-	echo 
+	echo ""
 	WORKSPACE_DIR=$(get_workspace_dir)
 	MAP_DOCKER_SOCK_VOLUME="-v /var/run/docker.sock:/var/run/docker.sock"
 	[[ ! ${USE_DOCKER^^} == "Y" ]] && MAP_DOCKER_SOCK_VOLUME=""
